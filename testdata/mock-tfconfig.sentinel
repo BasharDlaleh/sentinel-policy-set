@@ -1,0 +1,219 @@
+import "strings"
+import "types"
+
+_modules = {
+	"root": {
+		"data": {
+			"aws_vpc": {
+				"main": {
+					"config": {
+						"id": "vpc-09e763c3abc8bf95b",
+					},
+					"provisioners": null,
+					"references": {
+						"id": [],
+					},
+				},
+			},
+			"template_file": {
+				"user_data": {
+					"config": {
+						"template": null,
+					},
+					"provisioners": null,
+					"references": {
+						"template": [],
+					},
+				},
+			},
+		},
+		"modules": {},
+		"outputs": {
+			"public_ip": {
+				"depends_on":  [],
+				"description": "",
+				"references": [
+					"aws_instance.my_server.public_ip",
+					"aws_instance.my_server",
+				],
+				"sensitive": false,
+				"value":     undefined,
+			},
+		},
+		"providers": {
+			"aws": {
+				"alias": {
+					"": {
+						"config": {
+							"region": "us-east-1",
+						},
+						"references": {
+							"region": [],
+						},
+						"version": "4.2.0",
+					},
+				},
+				"config": {
+					"region": "us-east-1",
+				},
+				"references": {
+					"region": [],
+				},
+				"version": "4.2.0",
+			},
+		},
+		"resources": {
+			"aws_instance": {
+				"my_server": {
+					"config": {
+						"ami":           "ami-033b95fb8079dc481",
+						"instance_type": "t2.micro",
+						"tags": {
+							"Name": "My-Server",
+						},
+					},
+					"provisioners": [
+						{
+							"config": {},
+							"references": {
+								"command": [
+									"self.private_ip",
+									"self",
+								],
+							},
+							"type": "local-exec",
+						},
+					],
+					"references": {
+						"ami":           [],
+						"instance_type": [],
+						"key_name": [
+							"aws_key_pair.deployer.key_name",
+							"aws_key_pair.deployer",
+						],
+						"tags": [],
+						"user_data": [
+							"data.template_file.user_data.rendered",
+							"data.template_file.user_data",
+						],
+						"vpc_security_group_ids": [
+							"aws_security_group.sg_my_server.id",
+							"aws_security_group.sg_my_server",
+						],
+					},
+				},
+			},
+			"aws_key_pair": {
+				"deployer": {
+					"config": {
+						"key_name":   "deployer-key",
+						"public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDT4HlnIctbZx76n752Xv3+uWihgnUz8gR/w6ToJ4pXidn/mgxYRdGfLW0+otgp/zniug27T+vCaz+kAM6likKldGqy4D/xu4EImdHHW2prn2SnGYAYrn/thipYQRfOLJ+v0Qa0iyMxiQwl+WfoGbjX8R6el9YrEp921zSGpS7n8pTA7+jUJEL6FevxdSQSrPG4zJ5SKTqMcIGA48Gf2s4QQdYJqv8D4PdI3wRzMbh9UwLxbNUjGVoUkqH7FlnLfZ5XVJyuFFrGsbnuRVH9Y2iGcvqvMAZr9//y2xZvrNnXs8wEQD7laTTUffXPh275AYiP1U7c4vJ9pDA0EK/VPaN7 root@myserver",
+					},
+					"provisioners": null,
+					"references": {
+						"key_name":   [],
+						"public_key": [],
+					},
+				},
+			},
+			"aws_security_group": {
+				"sg_my_server": {
+					"config": {
+						"description": "MyServer Security Group",
+						"egress": [
+							{
+								"cidr_blocks": [
+									"0.0.0.0/0",
+								],
+								"description": null,
+								"from_port":   0,
+								"ipv6_cidr_blocks": [
+									"::/0",
+								],
+								"prefix_list_ids": null,
+								"protocol":        "-1",
+								"security_groups": null,
+								"self":            null,
+								"to_port":         0,
+							},
+						],
+						"ingress": [
+							{
+								"cidr_blocks": [
+									"0.0.0.0/0",
+								],
+								"description":      "HTTP from Anywhere",
+								"from_port":        80,
+								"ipv6_cidr_blocks": [],
+								"prefix_list_ids":  null,
+								"protocol":         "tcp",
+								"security_groups":  null,
+								"self":             null,
+								"to_port":          80,
+							},
+							{
+								"cidr_blocks": [
+									"0.0.0.0/0",
+								],
+								"description":      "SSH from Anywhere",
+								"from_port":        22,
+								"ipv6_cidr_blocks": [],
+								"prefix_list_ids":  null,
+								"protocol":         "tcp",
+								"security_groups":  null,
+								"self":             null,
+								"to_port":          22,
+							},
+						],
+						"name": "sg_my_server",
+						"tags": {
+							"Name": "My-Server Security Group",
+						},
+					},
+					"provisioners": null,
+					"references": {
+						"description": [],
+						"egress":      [],
+						"ingress":     [],
+						"name":        [],
+						"tags":        [],
+						"vpc_id": [
+							"data.aws_vpc.main.id",
+							"data.aws_vpc.main",
+						],
+					},
+				},
+			},
+		},
+		"variables": {},
+	},
+}
+
+module_paths = [
+	[],
+]
+
+module = func(path) {
+	if types.type_of(path) is not "list" {
+		error("expected list, got", types.type_of(path))
+	}
+
+	if length(path) < 1 {
+		return _modules.root
+	}
+
+	addr = []
+	for path as p {
+		append(addr, "module")
+		append(addr, p)
+	}
+
+	return _modules[strings.join(addr, ".")]
+}
+
+data = _modules.root.data
+modules = _modules.root.modules
+providers = _modules.root.providers
+resources = _modules.root.resources
+variables = _modules.root.variables
+outputs = _modules.root.outputs

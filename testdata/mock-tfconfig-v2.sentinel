@@ -1,0 +1,255 @@
+import "strings"
+
+providers = {
+	"aws": {
+		"alias": "",
+		"config": {
+			"region": {
+				"constant_value": "us-east-1",
+			},
+		},
+		"module_address":      "",
+		"name":                "aws",
+		"provider_config_key": "aws",
+		"version_constraint":  "4.2.0",
+	},
+}
+
+resources = {
+	"aws_instance.my_server": {
+		"address": "aws_instance.my_server",
+		"config": {
+			"ami": {
+				"constant_value": "ami-033b95fb8079dc481",
+			},
+			"instance_type": {
+				"constant_value": "t2.micro",
+			},
+			"key_name": {
+				"references": [
+					"aws_key_pair.deployer.key_name",
+					"aws_key_pair.deployer",
+				],
+			},
+			"tags": {
+				"constant_value": {
+					"Name": "My-Server",
+				},
+			},
+			"user_data": {
+				"references": [
+					"data.template_file.user_data.rendered",
+					"data.template_file.user_data",
+				],
+			},
+			"vpc_security_group_ids": {
+				"references": [
+					"aws_security_group.sg_my_server.id",
+					"aws_security_group.sg_my_server",
+				],
+			},
+		},
+		"count":               {},
+		"depends_on":          [],
+		"for_each":            {},
+		"mode":                "managed",
+		"module_address":      "",
+		"name":                "my_server",
+		"provider_config_key": "aws",
+		"provisioners": [
+			{
+				"config": {
+					"command": {
+						"references": [
+							"self.private_ip",
+							"self",
+						],
+					},
+				},
+				"index":            0,
+				"resource_address": "aws_instance.my_server",
+				"type":             "local-exec",
+			},
+		],
+		"type": "aws_instance",
+	},
+	"aws_key_pair.deployer": {
+		"address": "aws_key_pair.deployer",
+		"config": {
+			"key_name": {
+				"constant_value": "deployer-key",
+			},
+			"public_key": {
+				"constant_value": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDT4HlnIctbZx76n752Xv3+uWihgnUz8gR/w6ToJ4pXidn/mgxYRdGfLW0+otgp/zniug27T+vCaz+kAM6likKldGqy4D/xu4EImdHHW2prn2SnGYAYrn/thipYQRfOLJ+v0Qa0iyMxiQwl+WfoGbjX8R6el9YrEp921zSGpS7n8pTA7+jUJEL6FevxdSQSrPG4zJ5SKTqMcIGA48Gf2s4QQdYJqv8D4PdI3wRzMbh9UwLxbNUjGVoUkqH7FlnLfZ5XVJyuFFrGsbnuRVH9Y2iGcvqvMAZr9//y2xZvrNnXs8wEQD7laTTUffXPh275AYiP1U7c4vJ9pDA0EK/VPaN7 root@myserver",
+			},
+		},
+		"count":               {},
+		"depends_on":          [],
+		"for_each":            {},
+		"mode":                "managed",
+		"module_address":      "",
+		"name":                "deployer",
+		"provider_config_key": "aws",
+		"provisioners":        [],
+		"type":                "aws_key_pair",
+	},
+	"aws_security_group.sg_my_server": {
+		"address": "aws_security_group.sg_my_server",
+		"config": {
+			"description": {
+				"constant_value": "MyServer Security Group",
+			},
+			"egress": {
+				"constant_value": [
+					{
+						"cidr_blocks": [
+							"0.0.0.0/0",
+						],
+						"description": null,
+						"from_port":   0,
+						"ipv6_cidr_blocks": [
+							"::/0",
+						],
+						"prefix_list_ids": null,
+						"protocol":        "-1",
+						"security_groups": null,
+						"self":            null,
+						"to_port":         0,
+					},
+				],
+			},
+			"ingress": {
+				"constant_value": [
+					{
+						"cidr_blocks": [
+							"0.0.0.0/0",
+						],
+						"description":      "HTTP from Anywhere",
+						"from_port":        80,
+						"ipv6_cidr_blocks": [],
+						"prefix_list_ids":  null,
+						"protocol":         "tcp",
+						"security_groups":  null,
+						"self":             null,
+						"to_port":          80,
+					},
+					{
+						"cidr_blocks": [
+							"0.0.0.0/0",
+						],
+						"description":      "SSH from Anywhere",
+						"from_port":        22,
+						"ipv6_cidr_blocks": [],
+						"prefix_list_ids":  null,
+						"protocol":         "tcp",
+						"security_groups":  null,
+						"self":             null,
+						"to_port":          22,
+					},
+				],
+			},
+			"name": {
+				"constant_value": "sg_my_server",
+			},
+			"tags": {
+				"constant_value": {
+					"Name": "My-Server Security Group",
+				},
+			},
+			"vpc_id": {
+				"references": [
+					"data.aws_vpc.main.id",
+					"data.aws_vpc.main",
+				],
+			},
+		},
+		"count":               {},
+		"depends_on":          [],
+		"for_each":            {},
+		"mode":                "managed",
+		"module_address":      "",
+		"name":                "sg_my_server",
+		"provider_config_key": "aws",
+		"provisioners":        [],
+		"type":                "aws_security_group",
+	},
+	"data.aws_vpc.main": {
+		"address": "data.aws_vpc.main",
+		"config": {
+			"id": {
+				"constant_value": "vpc-09e763c3abc8bf95b",
+			},
+		},
+		"count":               {},
+		"depends_on":          [],
+		"for_each":            {},
+		"mode":                "data",
+		"module_address":      "",
+		"name":                "main",
+		"provider_config_key": "aws",
+		"provisioners":        [],
+		"type":                "aws_vpc",
+	},
+	"data.template_file.user_data": {
+		"address": "data.template_file.user_data",
+		"config": {
+			"template": {
+				"constant_value": null,
+			},
+		},
+		"count":               {},
+		"depends_on":          [],
+		"for_each":            {},
+		"mode":                "data",
+		"module_address":      "",
+		"name":                "user_data",
+		"provider_config_key": "template",
+		"provisioners":        [],
+		"type":                "template_file",
+	},
+}
+
+provisioners = {
+	"aws_instance.my_server:0": {
+		"config": {
+			"command": {
+				"references": [
+					"self.private_ip",
+					"self",
+				],
+			},
+		},
+		"index":            0,
+		"resource_address": "aws_instance.my_server",
+		"type":             "local-exec",
+	},
+}
+
+variables = {}
+
+outputs = {
+	"public_ip": {
+		"depends_on":     [],
+		"description":    "",
+		"module_address": "",
+		"name":           "public_ip",
+		"sensitive":      false,
+		"value": {
+			"references": [
+				"aws_instance.my_server.public_ip",
+				"aws_instance.my_server",
+			],
+		},
+	},
+}
+
+module_calls = {}
+
+strip_index = func(addr) {
+	s = strings.split(addr, ".")
+	for s as i, v {
+		s[i] = strings.split(v, "[")[0]
+	}
+
+	return strings.join(s, ".")
+}

@@ -1,0 +1,47 @@
+id = "run-Phoqj87yqApPjnbd"
+created_at = "2022-03-05T14:51:31.525Z"
+message = "test sentinel policy"
+commit_sha = "79844c586fb75a7358a0f8e178270e8683938c16"
+speculative = false
+is_destroy = false
+refresh = true
+refresh_only = false
+replace_addrs = null
+target_addrs = null
+
+variables = {
+	"AWS_ACCESS_KEY_ID": {
+		"category":  "terraform",
+		"sensitive": true,
+	},
+	"AWS_SECRET_ACCESS_KEY": {
+		"category":  "terraform",
+		"sensitive": true,
+	},
+}
+
+organization = {
+	"name": "cNepho",
+}
+
+workspace = {
+	"auto_apply":  true,
+	"created_at":  "2022-03-05T12:27:03.040Z",
+	"description": "test terraform cloud with sentinel policies",
+	"id":          "ws-pwdM3E52EQ6UA4Cb",
+	"name":        "terraform-cloud",
+	"tags":        [],
+	"vcs_repo": {
+		"branch":             "",
+		"display_identifier": "BasharDlaleh/terraform-cloud",
+		"identifier":         "BasharDlaleh/terraform-cloud",
+		"ingress_submodules": false,
+	},
+	"working_directory": "",
+}
+
+cost_estimate = {
+	"delta_monthly_cost":    "0.0",
+	"prior_monthly_cost":    "9.4303999999999992",
+	"proposed_monthly_cost": "9.4303999999999992",
+}

@@ -1,0 +1,10 @@
+{
+	"records": [
+		{
+			"key": "restrict-ec2-instance-type",
+			"source": "./restrict-ec2-instance-type.sentinel",
+			"sourceSum": "",
+			"dest": "/root/terraform/sentinel-policy-set/restrict-ec2-instance-type.sentinel"
+		}
+	]
+}
